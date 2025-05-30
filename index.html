@@ -112,14 +112,32 @@
 <body>
     <div class="container">
         <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">🐮 Vaquinha da nova Sanduicheira 🤤🥪</h1>
-        <div class="flex items-center justify-center mb-6 gap-3">
-    <a href="https://www.mercadolivre.com.br/grill-e-sanduicheira-pgr21pi-maxx-clean-1000w-cinza-philco-127v/p/MLB22852655#polycard_client=recommendations_pdp-v2p&reco_backend=ranker_retrieval_system_vpp_v2p_coldstart&reco_model=ranker_entity_v2_retrieval_system_vpp_v2p&reco_client=pdp-v2p&reco_item_pos=1&reco_backend_type=low_level&reco_id=6cd3dc2a-f691-4f4d-b723-52820b75024f&wid=MLB3566803125&sid=recos" target="_blank" class="flex items-center gap-2 hover:underline text-blue-700 font-medium">
-        <img src="sanduicheira.png" alt="Sanduicheira Philco" class="w-52 h-52 object-contain rounded shadow" />
-        Ver sanduicheira no Mercado Livre
-    </a>
-</div>
+        <div class="flex flex-col md:flex-row items-center justify-center mb-6 gap-8">
+            <!-- Instruções -->
+            <div class="md:w-1/2 w-full mb-4 md:mb-0">
+                <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-4 shadow-sm">
+                    <h2 class="text-lg font-semibold mb-2 text-indigo-800">Instruções:</h2>
+                    <ol class="list-decimal list-inside text-gray-700 space-y-1">
+                        <li>Confira o link com o valor atual da sanduicheira ao lado.</li>
+                        <li>Caso o valor tenha mudado, ajude-nos alterando o campo Preço Atual*</li>
+                        <li>Digite seu nome e clique em <b>Participar!</b></li>
+                        <li>Confira seu nome na lista de participantes, altere caso precise.</li>
+                        <li>Cuidado para não remover o nome do colega 😉</li>
+                        <li>O valor por pessoa é <b>calculado automaticamente</b>.</li>
+                        <li>Quando tivermos uma boa quantidade de pessoas, combinamos o pagamento!</li>
+                    </ol>
+                </div>
+            </div>
+            <!-- Imagem e link -->
+            <div class="md:w-1/2 w-full flex flex-col items-center">
+                <img src="sanduicheira.png" alt="Sanduicheira Philco" class="w-52 h-52 object-contain rounded shadow mb-2" />
+                <a href="https://www.mercadolivre.com.br/grill-e-sanduicheira-pgr21pi-maxx-clean-1000w-cinza-philco-127v/p/MLB22852655#polycard_client=recommendations_pdp-v2p&reco_backend=ranker_retrieval_system_vpp_v2p_coldstart&reco_model=ranker_entity_v2_retrieval_system_vpp_v2p&reco_client=pdp-v2p&reco_item_pos=1&reco_backend_type=low_level&reco_id=6cd3dc2a-f691-4f4d-b723-52820b75024f&wid=MLB3566803125&sid=recos" target="_blank" class="hover:underline text-blue-700 font-medium">
+                    Ver sanduicheira no Mercado Livre
+                </a>
+            </div>
+        </div>
         <div class="input-group">
-            <label for="precoSanduicheira" class="input-label">Preço Atual*(pode variar até o dia de compra) da Sanduicheira (R$):</label>
+            <label for="precoSanduicheira" class="input-label">Preço Atual* da Sanduicheira (pode variar até o dia de compra):</label>
             <input type="number" id="precoSanduicheira" class="input-field" placeholder="Coloque o valor atual que está no link acima. Ex: 159.90" step="0.01" min="0">
         </div>
 
@@ -140,7 +158,7 @@
 
         <div class="results-display">
             <p>👥 Total de Participantes: <strong id="totalParticipantes">0</strong></p>
-            <p>💰 Valor por Pessoa: <strong id="valorPorPessoa">R$ 0,00</strong></p>
+            <p>💰 Valor atual por Pessoa: <strong id="valorPorPessoa">R$ 0,00</strong></p>
         </div>
         
         <div id="userIdDisplay" class="mt-4 text-xs text-gray-500 text-center">Seu ID de Colaborador: <span id="currentUserId">Carregando...</span></div>
@@ -343,14 +361,12 @@
             const nome = nomeParticipanteInput.value.trim();
             if (nome) {
                 try {
-                    // Verificar se o nome já existe (opcional, mas bom para evitar duplicados exatos)
-                    const q = query(participantesCollectionRef, where("nome", "==", nome));
+                    // Verificar se o nome já existe (agora força sobrenome diferente)
+                    const q = query(participantesCollectionRef, where("nome", "==", nome.toLowerCase()));
                     const querySnapshot = await getDocs(q);
                     if (!querySnapshot.empty) {
-                        // Poderia usar um modal customizado aqui
-                        if (!confirm(`O nome "${nome}" já está na lista. Deseja adicioná-lo novamente?`)) {
-                            return;
-                        }
+                        alert(`O nome \"${nome}\" já está na lista. Por favor, coloque também um sobrenome ou diferencie seu nome.`);
+                        return;
                     }
 
                     await addDoc(participantesCollectionRef, {
